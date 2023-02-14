@@ -35,4 +35,12 @@ Create a AWS budget completed
 aws budgets create-budget \
     --account-id 404507571813 \
     --budget file://budget.json \
-    --notifications-with-subscribers file://budget-notifications-with-subscriber.json
+    --notifications-with-subscribers file://budget-notifications-with-subscriber.json      
+    
+    
+# Cruddder Arch
+
+Link to Lucid Chart: https://lucid.app/lucidchart/626539a1-d299-4782-b3c5-efc2996d3cb3/edit?viewport_loc=-3135%2C-31%2C4245%2C1545%2C0_0&invitationId=inv_d8a9955c-639d-417d-8632-423ceec9a779       
+
+![image](https://user-images.githubusercontent.com/88241057/218769202-d45c9190-28d2-4d8d-a7ae-68f20ca927d1.png)
+
