@@ -7,8 +7,8 @@ Env vars set for gitpod environment
 AWS CLI working as expected      
 
 {
-    "UserId": "AIDAV4LU****5RZ323CNU",
-    "Account": "40450****813",
+    "UserId": "AIDAV4LU****_5RZ323CNU",
+    "Account": "40450****_813",
     "Arn": "arn:aws:iam::40450****813:user/ManojKumar"
 }      
      
