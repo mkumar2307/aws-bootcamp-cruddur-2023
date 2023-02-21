@@ -138,3 +138,43 @@ volumes:
   db:
     driver: local
 ```
+      
+## Notifications Feature      
+
+Created Notifiactions feature for backend and frontend appliactions as part of new feature addition.   
+## Backend     
+
+Made changes in backend-flask/app.py to add import and api for notifications     
+```sh     
+from services.notifications_activities import *
+@app.route("/api/activities/notifications", methods=['GET'])
+def data_notifications():
+  data = NotificationsActivities.run()
+  return data, 200    
+ ```    
+   
+Updated openapi yaml file to check how added api works.    
+Added Notifications activities service file (Python)
+     
+## Front-end     
+       
+Made changes in frontend-react-js/src/App.js to add import and /path    
+```sh     
+import NotificationsFeedPage from './pages/NotificationsFeedPage';
+ {
+    path: "/notifications",
+    element: <NotificationsFeedPage />
+  },     
+ ```   
+ 
+Added simple CSS file for Notifications Feed Page     
+
+```sh 
+article {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+  }     
+```   
+
+Added Notifications Feed page JS file.
