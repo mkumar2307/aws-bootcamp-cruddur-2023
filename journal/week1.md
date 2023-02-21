@@ -177,4 +177,5 @@ article {
   }     
 ```   
 
-Added Notifications Feed page JS file.
+Added Notifications Feed page JS file.    
+frontend-react-js/src/pages/NotificationsFeedPage.js
