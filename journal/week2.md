@@ -146,7 +146,131 @@ EPOCH=$(date +%s)
 aws xray get-service-graph --start-time $(($EPOCH-600)) --end-time $EPOCH
 ```      
       
+## CloudWatch Logs     
+    
+    
+Add Python Dependencies to `requirements.txt`    
+     
+```
+watchtower
+```     
+    
+Install Dependencies from `requirements.txt`     
+     
+```sh
+pip install -r requirements.txt
+```    
+    
+Adding Required Import statements in `app.py`       
+       
+```
+import watchtower
+import logging
+from time import strftime
+```     
       
+Adding configuaration for Cloudwatch Logs in app.py    
+     
+```py
+# Configuring Logger to Use CloudWatch
+LOGGER = logging.getLogger(__name__)
+LOGGER.setLevel(logging.DEBUG)
+console_handler = logging.StreamHandler()
+cw_handler = watchtower.CloudWatchLogHandler(log_group='cruddur')
+LOGGER.addHandler(console_handler)
+LOGGER.addHandler(cw_handler)
+LOGGER.info("some message")
+```    
+     
+```py
+@app.after_request
+def after_request(response):
+    timestamp = strftime('[%Y-%b-%d %H:%M]')
+    LOGGER.error('%s %s %s %s %s %s', timestamp, request.remote_addr, request.method, request.scheme, request.full_path, response.status)
+    return response
+```      
+     
+     
+TO test we will Log some test data in an API endpoint      
       
+```py
+LOGGER.info('Hello Cloudwatch! from  /api/activities/home')
+```     
+      
+We need to set the env variables for backend-flask in `docker-compose.yml`      
+       
+```yml
+      AWS_DEFAULT_REGION: "${AWS_DEFAULT_REGION}"
+      AWS_ACCESS_KEY_ID: "${AWS_ACCESS_KEY_ID}"
+      AWS_SECRET_ACCESS_KEY: "${AWS_SECRET_ACCESS_KEY}"
+```      
+      
+
+    
 ## Rollbar     
      
+Create a new Project in [Rollbar](https://rollbar.com/) called Crudder       
+
+Add the Python dependencies to `requirements.txt`      
+    
+     
+```
+blinker
+rollbar
+```      
+      
+Install Dependencies by following command      
+      
+```sh
+pip install -r requirements.txt
+```      
+      
+      
+Set the Rollbar Access Token using export command     
+    
+```sh
+export ROLLBAR_ACCESS_TOKEN=""
+gp env ROLLBAR_ACCESS_TOKEN=""
+```    
+      
+Update backend-flask in `docker-compose.yml` to use the Access Token     
+    
+```yml
+ROLLBAR_ACCESS_TOKEN: "${ROLLBAR_ACCESS_TOKEN}"
+```      
+      
+Add the Import Statements and Configuaration Required for Rollbar      
+      
+```py
+import rollbar
+import rollbar.contrib.flask
+from flask import got_request_exception
+```      
+       
+```py
+rollbar_access_token = os.getenv('ROLLBAR_ACCESS_TOKEN')
+@app.before_first_request
+def init_rollbar():
+    """init rollbar module"""
+    rollbar.init(
+        # access token
+        rollbar_access_token,
+        # environment name
+        'production',
+        # server root directory, makes tracebacks prettier
+        root=os.path.dirname(os.path.realpath(__file__)),
+        # flask already sets up logging
+        allow_logging_basic_config=False)
+    # send exceptions from `app` to rollbar, using flask's signal system.
+    got_request_exception.connect(rollbar.contrib.flask.report_exception, app)
+```      
+     
+     
+we will add an end point in app.py for testing     
+    
+```py
+@app.route('/rollbar/test')
+def rollbar_test():
+    rollbar.report_message('Hello World!', 'warning')
+    return "Hello World!"
+```
